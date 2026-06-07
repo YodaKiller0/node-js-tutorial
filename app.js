@@ -3,7 +3,9 @@ const fs = require('fs');
 const http = require('http');
 
 
-const html = fs.readFileSync('./template/index.html', 'utf-8' )
+const html = fs.readFileSync('./template/index.html', 'utf-8' );
+let products = JSON.parse(fs.readFileSync('./data/products.json', 'utf-8'));
+let productListHtml = fs.readFileSync('./template/product-list.html', 'utf-8');
 
 
 const server = http.createServer((request, response) => {
@@ -15,7 +17,7 @@ const server = http.createServer((request, response) => {
             'Content-type' : 'text/html',
             'my-header' : 'hello world'
         });
-        response.end(html.replace('{{%CONTENT%}}', 'you are in home page'));
+        response.end(html.replace('{{%CONTENT%}}', productListHtml));
 
     }else if(path.toLocaleLowerCase() === '/about'){
 
@@ -33,7 +35,14 @@ const server = http.createServer((request, response) => {
         });
         response.end(html.replace('{{%CONTENT%}}', 'you are in contact page'));
 
-    }else{
+    }else if (path.toLocaleLowerCase() === '/products'){
+        response.writeHead(200, {
+            'content-type' : 'application/json'
+        });
+        response.end('you are in products page')
+        console.log(products);
+    }
+    else{
 
         response.writeHead(404, {
             'Content-type' : 'text/html',
